@@ -1,0 +1,33 @@
+{
+  "name": "@plumcode/react-events",
+  "version": "0.2.3",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "keywords": [
+    "react",
+    "event",
+    "react-events",
+    "listener",
+    "emitter",
+    "subject",
+    "observer",
+    "subscribe"
+  ],
+  "author": "plumcode",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc && cat package.json | jq 'del(.scripts)' > dist/package.json && cp README.md dist/",
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "beta"
+  },
+  "dependencies": {
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.24",
+    "typescript": "^4.4.3"
+  }
+}
