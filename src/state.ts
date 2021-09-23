@@ -1,19 +1,25 @@
 export type Topic = string;
 export type Subscriber<T> = (data: T) => any;
-export type Subjects = {
+type Subjects = {
     [topic: string]: {
         [id: string]: Subscriber<any>
     }
 }
+export type Subscription<T> = {
+    id: string;
+    unsubscribe(): void;
+}
 
 const SUBJECTS: Subjects = {};
 
-const isSubjectExists = (topic: Topic) => !!SUBJECTS?.[topic];
-export const createSubject = (topic: Topic) => {
+function isSubjectExists(topic: Topic): boolean {
+    return !!SUBJECTS?.[topic];
+}
+function createSubject(topic: Topic): void {
     if (isSubjectExists(topic)) return;
     SUBJECTS[topic] = {};
-};
-export const subscribe = <T>(topic: Topic, subscriber: Subscriber<T>) => {
+}
+export function subscribe<T>(topic: Topic, subscriber: Subscriber<T>): Subscription<T> {
     if (!isSubjectExists(topic)) createSubject(topic);
 
     const id = Math.random().toString(16).slice(2);
@@ -27,11 +33,12 @@ export const subscribe = <T>(topic: Topic, subscriber: Subscriber<T>) => {
         id,
         unsubscribe: () => unsubscribe()
     };
-};
+}
 
-type ObjectType = {[key: string]: any};
-const values = (o: ObjectType) => Object.keys(o).map((k) => o[k]);
-const entries = (o: ObjectType) => Object.keys(o).map((k) => [k, o[k]]);
+function entries(o: {[key: string]: any}) {
+    return Object.keys(o).map((k) => [k, o[k]]);
+}
 
-export const findSubscribers = (topic: Topic) => values(SUBJECTS?.[topic] || {});
-export const find = (topic: Topic) => entries(SUBJECTS?.[topic] || {}).map(([id, subscription]) => ({ id, subscription }));
+export function find<T>(topic: Topic): {id: string, subscription(data: T): void}[] {
+    return entries(SUBJECTS?.[topic] || {}).map(([id, subscription]) => ({ id, subscription }));
+}
