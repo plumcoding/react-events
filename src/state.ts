@@ -1,7 +1,7 @@
 export type Topic = string;
 export type Subscriber<T> = (data: T) => any;
 export type Subjects = {
-    [topic: Topic]: {
+    [topic: string]: {
         [id: string]: Subscriber<any>
     }
 }
