@@ -24,7 +24,9 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsc && cat package.json | jq 'del(.scripts)' > dist/package.json && cp README.md dist/"
+    "pullVersion": "read -p 'Next version type [major|minor|patch]: ' package_version_type && npm version ${package_version_type}",
+    "build": "tsc && cat package.json | jq 'del(.scripts)' > dist/package.json && cp README.md dist/",
+    "deploy": "yarn pullVersion && yarn build && yarn publish --non-interactive"
   },
   "publishConfig": {
     "access": "public",
