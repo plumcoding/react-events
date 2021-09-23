@@ -1,5 +1,5 @@
 # @plumcode/react-events
-Lightweight event processor for React
+Lightweight & fast event processor for React
 
 **Note, this is beta package. Currently, only functional components are supported.**
 
@@ -12,23 +12,19 @@ Lightweight event processor for React
 ## Usage
 Simply put hook into your functional component:
 
-```typescript jsx
+```jsx
 import {useEffect} from 'react';
 import {useEmitter, useListener, useGlobalEmitter} from '@plumcode/react-events'
 
-type Foo = {
-    bar: string;
-}
-
 const EmittingComponent = () => {
     // you can emit values using one-type emitter
-    const [emitFoo] = useEmitter<Foo>('FOO_EVENT');
+    const [emitFoo] = useEmitter('FOO_EVENT');
 
     // you can also emit values by passing event type each time 
     const [emitGlobal] = useGlobalEmitter();
     
-    const emitRandomNumber = () => emitGlobal<number>('RANDOM_NUMBER', Math.random())
-    const emitRandomString = () => emitGlobal<string>('RANDOM_STRING', Math.random().toString(16).slice(2))
+    const emitRandomNumber = () => emitGlobal('RANDOM_NUMBER', Math.random())
+    const emitRandomString = () => emitGlobal('RANDOM_STRING', Math.random().toString(16).slice(2))
 
     return <>
         <button onClick={() => emitFoo({bar: 'baz'})}>
@@ -45,9 +41,9 @@ const EmittingComponent = () => {
 }
 
 const ConsumingComponent = () => {
-    const [foo, setFoo] = useState<Foo>();
-    const [randomNumber, setRandomNumber] = useState<number>();
-    const [randomString, setRandomString] = useState<string>();
+    const [foo, setFoo] = useState();
+    const [randomNumber, setRandomNumber] = useState();
+    const [randomString, setRandomString] = useState();
 
     // consume event by passing event type and subscriber function
     useListener<Foo>('FOO_EVENT', (foo) => setFoo(foo));
@@ -58,6 +54,68 @@ const ConsumingComponent = () => {
         <span>Foo: {JSON.stringify(foo)}</span>
         <span>Random number: {randomNumber}</span>
         <span>Random string: {randomString}</span>
+    </>
+}
+```
+
+### TypeScript
+TypeScript is supported
+
+For example, for type `Foo`
+```typescript
+type Foo = {
+    bar: string
+}
+```
+
+you can use typed emitter and listener:
+
+```typescript jsx
+import {useState} from "react";
+import {useEmitter, useListener} from '@plumcode/react-events'
+
+const FooComponent = () => {
+    const [foo, setFoo] = useState<Foo | undefined>();
+    const [emitFoo] = useEmitter<Foo>('FOO_EVENT');
+    const handleFoo = (foo: Foo) => setFoo(foo);
+    useListener<Foo>('FOO_EVENT', handleFoo);
+
+    const onEmitButtonClick = () => emitFoo({bar: 'baz'});
+
+    return <>
+        <span>{JSON.stringify(foo)}</span>
+        <button onClick={onEmitButtonClick}>Emit foo</button>
+    </>
+}
+```
+
+and global, generic emitter:
+
+```typescript jsx
+import {useState} from 'react';
+import {useGlobalEmitter, useListener} from '@plumcode/react-events'
+
+const FooComponent = () => {
+    const [randomNumber, setRandomNumber] = useState<number>(0);
+    const [randomString, setRandomString] = useState<string>('');
+
+    useListener<number>('RANDOM_NUMBER', setRandomNumber);
+    useListener<string>('RANDOM_STRING', setRandomString);
+    
+    const [emit] = useGlobalEmitter();
+    const emitRandomNumber = () => emit<number>('RANDOM_NUMBER', Math.random())
+    const emitRandomString = () => emit<string>('RANDOM_STRING', Math.random().toString(16).slice(2))
+    
+    return <>
+        <span>Random number: {randomNumber}</span>
+        <span>Random string: {randomString}</span>
+        
+        <button onClick={emitRandomNumber}>
+            Emit number
+        </button>
+        <button onClick={emitRandomString}>
+            Emit string
+        </button>
     </>
 }
 ```
