@@ -12,7 +12,6 @@ export function useEmitter<T>(topic?: string): TypedEmitter<T> | GenericEmitter<
         subscribers.forEach((subscriber) => subscriber?.subscription?.(data));
     };
 
-    debugger
     const emit = topic !== undefined
         ? <T>(data?: T) => _emit(topic, data)
         : <T>(topic: Topic, data?: T) => _emit(topic, data);
