@@ -39,6 +39,6 @@ function entries(o: {[key: string]: any}) {
     return Object.keys(o).map((k) => [k, o[k]]);
 }
 
-export function find<T>(topic: Topic): {id: string, subscription(data: T): void}[] {
+export function find<T>(topic: Topic): {id: string, subscription(data?: T): void}[] {
     return entries(SUBJECTS?.[topic] || {}).map(([id, subscription]) => ({ id, subscription }));
 }

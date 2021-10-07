@@ -1,3 +1,7 @@
-import {Topic, Subscriber, Subjects} from './src/state'
+import {useListener} from "./src";
+import {useEmitter} from "./src";
 
-export {Topic, Subscriber, Subjects};
+export {
+    useEmitter,
+    useListener,
+}

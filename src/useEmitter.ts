@@ -1,16 +1,21 @@
 import {find, Topic} from "./state";
 
-export function useGlobalEmitter() {
-    const emit = <T>(topic: Topic, data: T) => {
+type TypedEmitter<T> = [(data?: T) => void]
+type GenericEmitter<T> = [(topic: Topic, data?: T) => void]
+
+export function useEmitter<T>(): GenericEmitter<T>;
+export function useEmitter<T>(topic: string): TypedEmitter<T>;
+
+export function useEmitter<T>(topic?: string): TypedEmitter<T> | GenericEmitter<T> {
+    const _emit = <T>(topic: Topic, data?: T) => {
         const subscribers = find<T>(topic);
         subscribers.forEach((subscriber) => subscriber?.subscription?.(data));
     };
 
-    return [emit];
-}
-export function useEmitter<T>(topic: string) {
-    const [_emit] = useGlobalEmitter();
-    const emit = (data: T) => _emit<T>(topic, data);
+    debugger
+    const emit = topic !== undefined
+        ? <T>(data?: T) => _emit(topic, data)
+        : <T>(topic: Topic, data?: T) => _emit(topic, data);
 
     return [emit];
 }
