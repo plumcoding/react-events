@@ -1,7 +1,7 @@
-import {useListener} from "./src";
-import {useEmitter} from "./src";
+import {useListener, useEmitter, useGlobalEmitter} from "./src";
 
 export {
+    useGlobalEmitter,
     useEmitter,
     useListener,
 }
