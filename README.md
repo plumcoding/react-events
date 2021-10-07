@@ -14,14 +14,14 @@ Simply put hook into your functional component:
 
 ```jsx
 import {useEffect} from 'react';
-import {useEmitter, useListener, useGlobalEmitter} from '@plumcode/react-events'
+import {useEmitter, useListener} from '@plumcode/react-events'
 
 const EmittingComponent = () => {
     // you can emit values using one-type emitter
     const [emitFoo] = useEmitter('FOO_EVENT');
 
     // you can also emit values by passing event type each time 
-    const [emitGlobal] = useGlobalEmitter();
+    const [emitGlobal] = useEmitter();
     
     const emitRandomNumber = () => emitGlobal('RANDOM_NUMBER', Math.random())
     const emitRandomString = () => emitGlobal('RANDOM_STRING', Math.random().toString(16).slice(2))
@@ -93,7 +93,7 @@ and global, generic emitter:
 
 ```typescript jsx
 import {useState} from 'react';
-import {useGlobalEmitter, useListener} from '@plumcode/react-events'
+import {useEmitter, useListener} from '@plumcode/react-events'
 
 const FooComponent = () => {
     const [randomNumber, setRandomNumber] = useState<number>(0);
@@ -102,7 +102,7 @@ const FooComponent = () => {
     useListener<number>('RANDOM_NUMBER', setRandomNumber);
     useListener<string>('RANDOM_STRING', setRandomString);
     
-    const [emit] = useGlobalEmitter();
+    const [emit] = useEmitter();
     const emitRandomNumber = () => emit<number>('RANDOM_NUMBER', Math.random())
     const emitRandomString = () => emit<string>('RANDOM_STRING', Math.random().toString(16).slice(2))
     
